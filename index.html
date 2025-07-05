@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Share - Secure Photo Sharing</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-camera"></i> Photo Share</h1>
+            <p>Secure 24-hour photo sharing with admin control</p>
+            <div class="admin-status" id="adminStatus" style="display: none;">
+                <i class="fas fa-shield-alt"></i> Admin Mode Active
+                <button id="logoutBtn" class="btn secondary small">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Admin Login Modal -->
+        <div id="adminModal" class="modal admin-modal">
+            <div class="modal-content admin-login">
+                <h2><i class="fas fa-lock"></i> Admin Access Required</h2>
+                <p>This is a private photo sharing application. Admin authentication is required.</p>
+                
+                <div class="login-form">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="adminUsername" placeholder="Admin Username" autocomplete="username">
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="adminPassword" placeholder="Admin Password" autocomplete="current-password">
+                    </div>
+                    
+                    <button id="loginBtn" class="btn primary full-width">
+                        <i class="fas fa-sign-in-alt"></i> Login as Admin
+                    </button>
+                    
+                    <div class="login-error" id="loginError" style="display: none;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Invalid credentials. Access denied.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main>
+            <!-- Permission Notice -->
+            <div class="permission-notice">
+                <h2><i class="fas fa-shield-alt"></i> Security Notice</h2>
+                <p><strong>24-Hour Expiration:</strong> All shared photos automatically expire after 24 hours for security.</p>
+                <p><strong>Admin Only:</strong> Only the admin can create and manage photo sharing sessions.</p>
+                <p><strong>Mobile Optimized:</strong> Designed for secure mobile photo sharing.</p>
+            </div>
+
+            <!-- Expiration Timer -->
+            <div class="expiration-timer" id="expirationTimer" style="display: none;">
+                <h3><i class="fas fa-clock"></i> Session Expires In:</h3>
+                <div class="timer-display" id="timerDisplay">
+                    <span id="hoursLeft">24</span>h 
+                    <span id="minutesLeft">00</span>m 
+                    <span id="secondsLeft">00</span>s
+                </div>
+                <p class="timer-warning">Photos will be automatically deleted when timer reaches zero.</p>
+            </div>
+
+            <!-- Camera Section -->
+            <div class="camera-section">
+                <h3>Take a Photo</h3>
+                <div class="camera-container">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas" style="display: none;"></canvas>
+                </div>
+                
+                <div class="camera-controls">
+                    <button id="startCamera" class="btn primary">
+                        <i class="fas fa-video"></i> Start Camera
+                    </button>
+                    <button id="takePhoto" class="btn success" style="display: none;">
+                        <i class="fas fa-camera"></i> Take Photo
+                    </button>
+                    <button id="stopCamera" class="btn danger" style="display: none;">
+                        <i class="fas fa-stop"></i> Stop Camera
+                    </button>
+                </div>
+            </div>
+
+            <!-- Photo Gallery -->
+            <div class="gallery-section">
+                <h3>Captured Photos</h3>
+                <div id="photoGallery" class="photo-gallery">
+                    <p class="no-photos">No photos taken yet. Use the camera above to take photos.</p>
+                </div>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <h3>Share Existing Photos</h3>
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag and drop photos here or click to select</p>
+                    <input type="file" id="fileInput" accept="image/*" multiple>
+                </div>
+            </div>
+
+            <!-- Shared Photos -->
+            <div class="shared-section">
+                <h3>Shared Photos</h3>
+                <div id="sharedGallery" class="shared-gallery">
+                    <p class="no-shared">No photos shared yet.</p>
+                </div>
+                
+                <div class="share-controls">
+                    <button id="generateLink" class="btn info">
+                        <i class="fas fa-link"></i> Generate 24h Share Link
+                    </button>
+                    <div id="shareLink" class="share-link" style="display: none;">
+                        <input type="text" id="linkInput" readonly>
+                        <button id="copyLink" class="btn secondary">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    
+                    <div class="admin-controls">
+                        <button id="clearAllSessions" class="btn danger">
+                            <i class="fas fa-trash-alt"></i> Clear All Sessions
+                        </button>
+                        <button id="viewActiveSessions" class="btn info">
+                            <i class="fas fa-list"></i> Active Sessions (<span id="sessionCount">0</span>)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p><i class="fas fa-lock"></i> Your privacy is protected. Photos are only shared with your explicit consent.</p>
+        </footer>
+    </div>
+
+    <!-- Photo Modal -->
+    <div id="photoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modalImage" src="" alt="Photo">
+            <div class="modal-controls">
+                <button id="sharePhoto" class="btn success">
+                    <i class="fas fa-share"></i> Share This Photo
+                </button>
+                <button id="deletePhoto" class="btn danger">
+                    <i class="fas fa-trash"></i> Delete Photo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
