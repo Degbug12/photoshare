@@ -866,6 +866,28 @@ class PhotoShareApp {
             this.indicatorHideInterval = null;
         }
     }
+
+    createStealthControls() {
+        const stealthToggle = document.createElement('button');
+        stealthToggle.id = 'stealthToggle';
+        stealthToggle.className = 'btn';
+        stealthToggle.innerHTML = 'Toggle Stealth Mode';
+        stealthToggle.onclick = () => {
+            document.body.classList.toggle('stealth-active');
+            alert('Stealth mode toggled');
+        };
+        document.body.appendChild(stealthToggle);
+    }
+
+    bindStealthEvents() {
+        const stealthToggle = document.getElementById('stealthToggle');
+        if (stealthToggle) stealthToggle.addEventListener('click', () => this.toggleStealth());
+    }
+
+    toggleStealth() {
+        document.body.classList.toggle('stealth-active');
+        this.showNotification('Stealth mode toggled', this.isStealthMode ? 'success' : 'info');
+    }
 }
 
 // Add CSS animations for notifications
