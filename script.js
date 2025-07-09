@@ -5,8 +5,6 @@ class PhotoShareApp {
         this.sharedPhotos = [];
         this.currentPhotoIndex = null;
         this.isAdmin = false;
-        this.timerInterval = null;
-        this.sessionExpiration = null;
         this.stealthMode = false;
         this.decoyActive = false;
         
