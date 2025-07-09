@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhotoShare Admin Dashboard</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" rel="preload" as="script">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <h1><i class="fas fa-shield-alt"></i> PhotoShare Admin Dashboard</h1>
+                <span class="status-indicator" id="connectionStatus">
+                    <i class="fas fa-circle"></i> Connected
+                </span>
+            </div>
+            <div class="header-right">
+                <div class="admin-info">
+                    <span>Admin: <strong id="adminUser">System Administrator</strong></span>
+                    <button id="logoutBtn" class="btn danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="admin-nav">
+            <button class="nav-btn active" data-section="overview">
+                <i class="fas fa-dashboard"></i> Overview
+            </button>
+            <button class="nav-btn" data-section="sessions">
+                <i class="fas fa-users"></i> Active Sessions
+            </button>
+            <button class="nav-btn" data-section="photos">
+                <i class="fas fa-images"></i> Photo Management
+            </button>
+            <button class="nav-btn" data-section="monitoring">
+                <i class="fas fa-eye"></i> Live Monitoring
+            </button>
+            <button class="nav-btn" data-section="security">
+                <i class="fas fa-lock"></i> Security
+            </button>
+            <button class="nav-btn" data-section="settings">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Overview Section -->
+            <section id="overview" class="admin-section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-dashboard"></i> System Overview</h2>
+                    <button id="refreshOverview" class="btn primary">
+                        <i class="fas fa-refresh"></i> Refresh
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="activeUsers">0</h3>
+                            <p>Active Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalPhotos">0</h3>
+                            <p>Total Photos</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-share"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="activeSessions">0</h3>
+                            <p>Active Sessions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="securityAlerts">0</h3>
+                            <p>Security Alerts</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Usage Analytics</h3>
+                        <canvas id="usageChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Photo Activity</h3>
+                        <canvas id="photoChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="activity-feed">
+                    <h3><i class="fas fa-clock"></i> Recent Activity</h3>
+                    <div id="activityList" class="activity-list">
+                        <div class="activity-item">
+                            <i class="fas fa-user-plus"></i>
+                            <span>New admin session started</span>
+                            <time>2 minutes ago</time>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sessions Section -->
+            <section id="sessions" class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-users"></i> Active Sessions Management</h2>
+                    <div class="header-actions">
+                        <button id="terminateAll" class="btn danger">
+                            <i class="fas fa-ban"></i> Terminate All
+                        </button>
+                        <button id="refreshSessions" class="btn primary">
+                            <i class="fas fa-refresh"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sessions-table">
+                    <table id="sessionsTable">
+                        <thead>
+                            <tr>
+                                <th>Session ID</th>
+                                <th>User IP</th>
+                                <th>Start Time</th>
+                                <th>Photos</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessionsTableBody">
+                            <!-- Sessions will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Photos Section -->
+            <section id="photos" class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-images"></i> Photo Management</h2>
+                    <div class="header-actions">
+                        <button id="bulkDelete" class="btn danger">
+                            <i class="fas fa-trash"></i> Bulk Delete
+                        </button>
+                        <button id="refreshPhotos" class="btn primary">
+                            <i class="fas fa-refresh"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="photos-grid" id="photosGrid">
+                    <!-- Photos will be populated here -->
+                </div>
+            </section>
+
+            <!-- Monitoring Section -->
+            <section id="monitoring" class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-eye"></i> Live Monitoring</h2>
+                    <div class="header-actions">
+                        <button id="toggleMonitoring" class="btn success">
+                            <i class="fas fa-play"></i> Start Monitoring
+                        </button>
+                    </div>
+                </div>
+
+                <div class="monitoring-grid">
+                    <div class="monitor-card">
+                        <h3>Real-time Camera Feed</h3>
+                        <div class="camera-monitor" id="cameraMonitor">
+                            <div class="no-feed">
+                                <i class="fas fa-video-slash"></i>
+                                <p>No active camera feeds</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="monitor-card">
+                        <h3>System Logs</h3>
+                        <div class="logs-container" id="systemLogs">
+                            <div class="log-entry">
+                                <span class="log-time">15:45:32</span>
+                                <span class="log-type info">INFO</span>
+                                <span class="log-message">Admin dashboard initialized</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Section -->
+            <section id="security" class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-lock"></i> Security Management</h2>
+                </div>
+
+                <div class="security-grid">
+                    <div class="security-card">
+                        <h3>Access Control</h3>
+                        <div class="form-group">
+                            <label>Admin Password</label>
+                            <input type="password" id="newPassword" placeholder="Enter new password">
+                            <button id="changePassword" class="btn primary">Change Password</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Session Timeout (minutes)</label>
+                            <input type="number" id="sessionTimeout" value="1440" min="1" max="2880">
+                            <button id="updateTimeout" class="btn primary">Update</button>
+                        </div>
+                    </div>
+                    <div class="security-card">
+                        <h3>Security Alerts</h3>
+                        <div id="securityAlertsList" class="alerts-list">
+                            <!-- Alerts will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="admin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-cog"></i> System Settings</h2>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3>General Settings</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableStealth" checked>
+                                Enable Stealth Mode
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableLogging" checked>
+                                Enable Activity Logging
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableNotifications" checked>
+                                Enable Email Notifications
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-card">
+                        <h3>Photo Settings</h3>
+                        <div class="form-group">
+                            <label>Max Photo Size (MB)</label>
+                            <input type="number" id="maxPhotoSize" value="10" min="1" max="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Auto-delete after (hours)</label>
+                            <input type="number" id="autoDeleteTime" value="24" min="1" max="168">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Emergency Controls -->
+    <div class="emergency-controls" id="emergencyControls">
+        <button id="emergencyStop" class="btn emergency">
+            <i class="fas fa-exclamation-triangle"></i> EMERGENCY STOP
+        </button>
+        <button id="wipeAll" class="btn emergency">
+            <i class="fas fa-bomb"></i> WIPE ALL DATA
+        </button>
+    </div>
+
+    <!-- Modals -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Action</h3>
+            <p id="confirmMessage">Are you sure you want to perform this action?</p>
+            <div class="modal-actions">
+                <button id="confirmYes" class="btn danger">Yes</button>
+                <button id="confirmNo" class="btn secondary">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>

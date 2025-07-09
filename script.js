@@ -114,6 +114,12 @@ class PhotoShareApp {
         this.clearAllSessionsBtn.addEventListener('click', () => this.clearAllSessions());
         this.viewActiveSessionsBtn.addEventListener('click', () => this.viewActiveSessions());
         
+        // Admin dashboard
+        const openAdminDashboard = document.getElementById('openAdminDashboard');
+        if (openAdminDashboard) {
+            openAdminDashboard.addEventListener('click', () => this.openAdminDashboard());
+        }
+        
         // Stealth mode controls
         this.bindStealthEvents();
         
@@ -887,6 +893,28 @@ class PhotoShareApp {
     toggleStealth() {
         document.body.classList.toggle('stealth-active');
         this.showNotification('Stealth mode toggled', this.isStealthMode ? 'success' : 'info');
+    }
+
+    openAdminDashboard() {
+        if (!this.isAdmin) {
+            this.showNotification('Admin access required', 'error');
+            return;
+        }
+
+        // Open admin dashboard in new window
+        const dashboardWindow = window.open(
+            'admin-dashboard.html',
+            'adminDashboard',
+            'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );
+
+        if (dashboardWindow) {
+            // Store reference to main app for dashboard communication
+            dashboardWindow.photoShareApp = this;
+            this.showNotification('Admin dashboard opened', 'success');
+        } else {
+            this.showNotification('Please allow pop-ups to open admin dashboard', 'warning');
+        }
     }
 }
 
